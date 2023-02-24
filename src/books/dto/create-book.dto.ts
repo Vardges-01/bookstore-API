@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
 
-export class BookDTO {
+export class CreateBookDto {
   @IsNotEmpty()
   @IsString()
   title: string;
