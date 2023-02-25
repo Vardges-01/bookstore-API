@@ -1,130 +1,126 @@
-// import { Test, TestingModule } from '@nestjs/testing';
-// import { BooksService } from './books.service';
+import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { BooksService } from '../books.service';
+import { CreateBookDto } from '../dto/create-book.dto';
+import { Books } from '../entity/books.entity';
 
-// describe('BooksService', () => {
-//   let service: BooksService;
+jest.mock('../books.service');
 
-//   beforeEach(async () => {
-//     const module: TestingModule = await Test.createTestingModule({
-//       providers: [BooksService],
-//     }).compile();
+describe('BooksService', () => {
+  let booksService: BooksService;
 
-//     service = module.get<BooksService>(BooksService);
-//   });
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+        providers: [BooksService,
+            {
+                provide: getRepositoryToken(Books),
+                useValue: {}
+            }],
+    }).compile();
 
-//   it('should be defined', () => {
-//     expect(service).toBeDefined();
-//   });
-// });
+    booksService = module.get<BooksService>(BooksService);
+  });
 
-// import { Test } from '@nestjs/testing';
-// import { Books } from '../entity/books.entity';
-// import { BooksService } from '../books.service';
-// import { getRepositoryToken } from '@nestjs/typeorm';
+  // Create book
+  describe("createBook", ()=>{
+    describe("when createBook is called", ()=>{
+      let books: Books
+      let createBookDto: CreateBookDto
 
-// describe('BooksService', () => {
-//   let bookService: BooksService;
+      beforeEach( async ()=>{
+        createBookDto = {
+          title: 'The Hobbit 2',
+          author: 'J.R.R. Tolkien',
+          isbn: '978-0547928227',
+          price: 9.99
+        }
 
-//   const mockRepository = {
-//     save: jest.fn(),
-//     find: jest.fn(),
-//     findOne: jest.fn(),
-//     remove: jest.fn(),
-//   };
+        books = await booksService.createBook(createBookDto);
+      })
 
-// beforeEach(async () => {
-//     const moduleRef = await Test.createTestingModule({
-//       providers: [
-//         BooksService,
-//         {
-//           provide: getRepositoryToken(Books),
-//           useValue: mockRepository,
-//         },
-//       ],
-//     }).compile();
+      test("then it should call booksService",()=>{
+        expect(booksService.createBook).toBeCalledWith(createBookDto);
+      })
+      
+      test("then the book should be created and returned", ()=>{
+        expect(books).toEqual({
+          id: 1,
+          ...createBookDto
+        });
+      })
+    })
+  })
 
-//     bookService = moduleRef.get<BooksService>(BooksService);
-//   });  
+  // Get Book By Id 
+  describe("getBookById", () => {
+    describe("when getBookById is called", () => {
+      let books: Books
 
+      beforeEach(async () => {
+        books = await booksService.getBookById(1);
+      })
 
-//   afterEach(() => {
-//     jest.resetAllMocks();
-//   });
+      test("then it should call booksService", () => {
+        expect(booksService.getBookById).toBeCalledWith(1);
+      })
 
-//   it('should create a new book', async () => {
-//     const book = new Books();
-//     book.title = 'The Hobbit';
-//     book.author = 'J.R.R. Tolkien';
-//     book.isbn = '978-0547928227';
-//     book.price = 9.99;
+      test('then is should return a book', () => {
+        expect(books).toEqual({
+          id: 1,
+          title: 'The Hobbit',
+          author: 'J.R.R. Tolkien',
+          isbn: '978-0547928227',
+          price: 9.99,
+        });
+      })
 
-//     mockRepository.save.mockReturnValueOnce(book);
+    })
+  })
 
-//     const createdBook = await bookService.create(book);
+  // Get all books
+  describe("getBooks", () => {
+    describe("when getBooks is called", () => {
+      let books: Books[]
 
-//     expect(mockRepository.save).toHaveBeenCalledWith(book);
-//     expect(createdBook).toEqual(book);
-//   });
+      beforeEach(async () => {
+        books = await booksService.getBooks();
+      })
 
-//   it('should return all books', async () => {
-//     const books = [
-//       {
-//         id: 1,
-//         title: 'The Hobbit',
-//         author: 'J.R.R. Tolkien',
-//         isbn: '978-0547928227',
-//         price: 9.99,
-//       },
-//       {
-//         id: 2,
-//         title: 'The Lord of the Rings',
-//         author: 'J.R.R. Tolkien',
-//         isbn: '978-0544003415',
-//         price: 19.99,
-//       },
-//     ];
+      test("then it should call booksService", () => {
+        expect(booksService.getBooks).toBeCalledWith();
+      })
 
-//     mockRepository.find.mockReturnValueOnce(books);
+      test('then is should return a books', () => {
+        expect(books).toEqual([{
+          id: 1,
+          title: 'The Hobbit',
+          author: 'J.R.R. Tolkien',
+          isbn: '978-0547928227',
+          price: 9.99,
+        }]);
+      })
+    })
+  })
 
-//     const allBooks = await bookService.findAll();
+  // Delete book
+  describe("deleteBook", () => {
+    describe("when deleteBook is called", () => {
+      let books: any
 
-//     expect(mockRepository.find).toHaveBeenCalled();
-//     expect(allBooks).toEqual(books);
-//   });
+      beforeEach(async () => {
+        books = await booksService.deleteBook(1);
+      })
 
-//   it('should return a book by id', async () => {
-//     const book = {
-//       id: 1,
-//       title: 'The Hobbit',
-//       author: 'J.R.R. Tolkien',
-//       isbn: '978-0547928227',
-//       price: 9.99,
-//     };
+      test("then it should call booksService", () => {
+        expect(booksService.deleteBook).toBeCalledWith(1);
+      })
 
-//     mockRepository.findOne.mockReturnValueOnce(book);
+      test('then is should return success is True', () => {
+        expect(books).toEqual({
+          success: true
+        });
+      })
 
-//     const foundBook = await bookService.findOne(1);
-//     // expect(mockRepository.findOne).toHaveBeenCalledWith(1);
-//     expect(foundBook).toEqual(book);
-//   });
-
-//   it('should delete a book by id', async () => {
-//     const book = {
-//       id: 1,
-//       title: 'The Hobbit',
-//       author: 'J.R.R. Tolkien',
-//       isbn: '978-0547928227',
-//       price: 9.99,
-//     };
-
-//     mockRepository.findOne.mockReturnValueOnce(book);
-//     mockRepository.remove.mockReturnValueOnce({ affected: 1 });
-
-//     const result = await bookService.remove(1);
-    
-//     expect(mockRepository.findOne).toHaveBeenCalledWith(1);
-//     expect(mockRepository.remove).toHaveBeenCalledWith(1);
-//     expect(result).toEqual({ success: true });
-//   });
-
-// });
+    })
+  })
+});

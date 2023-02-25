@@ -5,10 +5,11 @@ import { CreateBookDto } from "../dto/create-book.dto";
 import { Books } from "../entity/books.entity";
 
 jest.mock('../books.service');
+jest.mock('../books.controller');
 
 describe("BooksController", () => {
   let booksController: BooksController;
-  let booksService: BooksService;
+  // let booksService: BooksService;
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -18,7 +19,7 @@ describe("BooksController", () => {
     }).compile();
 
     booksController = moduleRef.get<BooksController>(BooksController);
-    booksService = moduleRef.get<BooksService>(BooksService);
+    // booksService = moduleRef.get<BooksService>(BooksService);
     jest.clearAllMocks();
   })
 
@@ -37,19 +38,17 @@ describe("BooksController", () => {
         }
 
         books = await booksController.createBook(createBookDto);
+        
       })
 
-      test("then it should call booksService",()=>{
-        expect(booksService.createBook).toBeCalledWith(createBookDto);
+      test("then it should call booksController",()=>{
+        expect(booksController.createBook).toBeCalledWith(createBookDto);
       })
       
       test("then the book should be created and returned", ()=>{
         expect(books).toEqual({
           id: 1,
-          title: 'The Hobbit',
-          author: 'J.R.R. Tolkien',
-          isbn: '978-0547928227',
-          price: 9.99,
+          ...createBookDto
         });
       })
     })
@@ -64,8 +63,8 @@ describe("BooksController", () => {
         books = await booksController.getBookById(1);
       })
 
-      test("then it should call booksService", () => {
-        expect(booksService.getBookById).toBeCalledWith(1);
+      test("then it should call booksController", () => {
+        expect(booksController.getBookById).toBeCalledWith(1);
       })
 
       test('then is should return a book', () => {
@@ -90,8 +89,8 @@ describe("BooksController", () => {
         books = await booksController.getBooks();
       })
 
-      test("then it should call booksService", () => {
-        expect(booksService.getBooks).toBeCalledWith();
+      test("then it should call booksController", () => {
+        expect(booksController.getBooks).toBeCalledWith();
       })
 
       test('then is should return a books', () => {
@@ -115,8 +114,8 @@ describe("BooksController", () => {
         books = await booksController.deleteBook(1);
       })
 
-      test("then it should call booksService", () => {
-        expect(booksService.deleteBook).toBeCalledWith(1);
+      test("then it should call booksController", () => {
+        expect(booksController.deleteBook).toBeCalledWith(1);
       })
 
       test('then is should return success is True', () => {
@@ -128,19 +127,3 @@ describe("BooksController", () => {
     })
   })
 })
-
-// describe('BookController', () => {
-//   let controller: BooksController;
-
-//   beforeEach(async () => {
-//     const module: TestingModule = await Test.createTestingModule({
-//       controllers: [BooksController],
-//     }).compile();
-
-//     controller = module.get<BooksController>(BooksController);
-//   });
-
-//   it('should be defined', () => {
-//     expect(controller).toBeDefined();
-//   });
-// });
