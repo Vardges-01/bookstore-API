@@ -4,7 +4,7 @@ import { BookDto } from './dto/book.dto';
 import { CreateBookDto } from './dto/create-book.dto';
 import { BookEntity } from './entity/book.entity';
 
-@Controller('books')
+@Controller('book')
 export class BookController {
   constructor(public readonly booksService: BookService) { }
 

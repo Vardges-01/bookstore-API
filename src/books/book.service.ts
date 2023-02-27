@@ -15,13 +15,15 @@ export class BookService {
 
     async createBook(createBookDto: CreateBookDto): Promise<BookDto> {
         const book = this.bookRepository.create(createBookDto);
+        
         await this.bookRepository.save(book);
         return book.toDto();
     }
 
     async getBooks(): Promise<BookDto[]> {
-        const books = await this.bookRepository.createQueryBuilder().getMany();
+        const books = await this.bookRepository.find();
         const book = compact(map(books, (item) => item.toDto()));
+        
         return book;
     }
 
