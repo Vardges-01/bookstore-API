@@ -1,10 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { BooksService } from './books/books.service';
-import { BooksController } from './books/books.controller';
-import { BooksModule } from './books/books.module';
+import { BookModule } from './books/book.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { dataSourceOptions } from './typeorm.config';
+import { dataSourceOptions } from '../typeorm.config';
 
 @Module({
   imports: [
@@ -13,7 +11,7 @@ import { dataSourceOptions } from './typeorm.config';
       isGlobal: true,
     }),
     TypeOrmModule.forRoot(dataSourceOptions),
-    BooksModule
+    BookModule
   ],
   controllers: [],
   providers: [],

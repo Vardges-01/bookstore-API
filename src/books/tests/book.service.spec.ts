@@ -1,50 +1,51 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { BooksService } from '../books.service';
+import { BookService } from '../book.service';
+import { BookDto } from '../dto/book.dto';
 import { CreateBookDto } from '../dto/create-book.dto';
-import { Books } from '../entity/books.entity';
+import { BookEntity } from '../entity/book.entity';
 
-jest.mock('../books.service');
+jest.mock('../book.service');
 
 describe('BooksService', () => {
-  let booksService: BooksService;
+  let bookService: BookService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-        providers: [BooksService,
+        providers: [BookService,
             {
-                provide: getRepositoryToken(Books),
+                provide: getRepositoryToken(BookEntity),
                 useValue: {}
             }],
     }).compile();
 
-    booksService = module.get<BooksService>(BooksService);
+    bookService = module.get<BookService>(BookService);
   });
 
   // Create book
   describe("createBook", ()=>{
     describe("when createBook is called", ()=>{
-      let books: Books
+      let book: BookDto
       let createBookDto: CreateBookDto
 
       beforeEach( async ()=>{
         createBookDto = {
-          title: 'The Hobbit 2',
+          title: 'The Hobbit',
           author: 'J.R.R. Tolkien',
           isbn: '978-0547928227',
-          price: 9.99
+          price: 15
         }
 
-        books = await booksService.createBook(createBookDto);
+        book = await bookService.createBook(createBookDto);
       })
 
       test("then it should call booksService",()=>{
-        expect(booksService.createBook).toBeCalledWith(createBookDto);
+        expect(bookService.createBook).toBeCalledWith(createBookDto);
       })
       
       test("then the book should be created and returned", ()=>{
-        expect(books).toEqual({
-          id: 1,
+        expect(book).toEqual({
+          id: "0ab2272c-5201-44f6-8420-ea4eb9e65c8d",
           ...createBookDto
         });
       })
@@ -54,23 +55,23 @@ describe('BooksService', () => {
   // Get Book By Id 
   describe("getBookById", () => {
     describe("when getBookById is called", () => {
-      let books: Books
+      let book: BookDto
 
       beforeEach(async () => {
-        books = await booksService.getBookById(1);
+        book = await bookService.getBookById("0ab2272c-5201-44f6-8420-ea4eb9e65c8d");
       })
 
       test("then it should call booksService", () => {
-        expect(booksService.getBookById).toBeCalledWith(1);
+        expect(bookService.getBookById).toBeCalledWith("0ab2272c-5201-44f6-8420-ea4eb9e65c8d");
       })
 
       test('then is should return a book', () => {
-        expect(books).toEqual({
-          id: 1,
+        expect(book).toEqual({
+          id: "0ab2272c-5201-44f6-8420-ea4eb9e65c8d",
           title: 'The Hobbit',
           author: 'J.R.R. Tolkien',
           isbn: '978-0547928227',
-          price: 9.99,
+          price: 15,
         });
       })
 
@@ -80,23 +81,23 @@ describe('BooksService', () => {
   // Get all books
   describe("getBooks", () => {
     describe("when getBooks is called", () => {
-      let books: Books[]
+      let books: BookDto[]
 
       beforeEach(async () => {
-        books = await booksService.getBooks();
+        books = await bookService.getBooks();
       })
 
       test("then it should call booksService", () => {
-        expect(booksService.getBooks).toBeCalledWith();
+        expect(bookService.getBooks).toBeCalledWith();
       })
 
       test('then is should return a books', () => {
         expect(books).toEqual([{
-          id: 1,
+          id: "0ab2272c-5201-44f6-8420-ea4eb9e65c8d",
           title: 'The Hobbit',
           author: 'J.R.R. Tolkien',
           isbn: '978-0547928227',
-          price: 9.99,
+          price: 15,
         }]);
       })
     })
@@ -108,11 +109,11 @@ describe('BooksService', () => {
       let books: any
 
       beforeEach(async () => {
-        books = await booksService.deleteBook(1);
+        books = await bookService.deleteBook("0ab2272c-5201-44f6-8420-ea4eb9e65c8d");
       })
 
       test("then it should call booksService", () => {
-        expect(booksService.deleteBook).toBeCalledWith(1);
+        expect(bookService.deleteBook).toBeCalledWith("0ab2272c-5201-44f6-8420-ea4eb9e65c8d");
       })
 
       test('then is should return success is True', () => {

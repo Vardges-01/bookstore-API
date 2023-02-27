@@ -1,32 +1,31 @@
 import { Test, TestingModule } from "@nestjs/testing"
-import { BooksController } from "../books.controller"
-import { BooksService } from "../books.service"
+import { BookController } from "../book.controller"
+import { BookService } from "../book.service"
+import { BookDto } from "../dto/book.dto";
 import { CreateBookDto } from "../dto/create-book.dto";
-import { Books } from "../entity/books.entity";
 
-jest.mock('../books.service');
-jest.mock('../books.controller');
+jest.mock('../book.service');
+jest.mock('../book.controller');
 
 describe("BooksController", () => {
-  let booksController: BooksController;
+  let bookController: BookController;
   // let booksService: BooksService;
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [],
-      controllers: [BooksController],
-      providers: [BooksService]
+      controllers: [BookController],
+      providers: []
     }).compile();
 
-    booksController = moduleRef.get<BooksController>(BooksController);
-    // booksService = moduleRef.get<BooksService>(BooksService);
+    bookController = moduleRef.get<BookController>(BookController);
     jest.clearAllMocks();
   })
 
   // Create Book test
   describe("createBook", ()=>{
     describe("when createBook is called", ()=>{
-      let books: Books
+      let book: BookDto
       let createBookDto: CreateBookDto
 
       beforeEach( async ()=>{
@@ -34,20 +33,20 @@ describe("BooksController", () => {
           title: 'The Hobbit',
           author: 'J.R.R. Tolkien',
           isbn: '978-0547928227',
-          price: 9.99
+          price: 15
         }
 
-        books = await booksController.createBook(createBookDto);
+        book = await bookController.createBook(createBookDto);
         
       })
 
       test("then it should call booksController",()=>{
-        expect(booksController.createBook).toBeCalledWith(createBookDto);
+        expect(bookController.createBook).toBeCalledWith(createBookDto);
       })
       
       test("then the book should be created and returned", ()=>{
-        expect(books).toEqual({
-          id: 1,
+        expect(book).toEqual({
+          id: "0ab2272c-5201-44f6-8420-ea4eb9e65c8d",
           ...createBookDto
         });
       })
@@ -57,23 +56,23 @@ describe("BooksController", () => {
   // Get Book By Id 
   describe("getBookById", () => {
     describe("when getBookById is called", () => {
-      let books: Books
+      let books: BookDto
 
       beforeEach(async () => {
-        books = await booksController.getBookById(1);
+        books = await bookController.getBookById("0ab2272c-5201-44f6-8420-ea4eb9e65c8d"); //TODO add id uuid
       })
 
       test("then it should call booksController", () => {
-        expect(booksController.getBookById).toBeCalledWith(1);
+        expect(bookController.getBookById).toBeCalledWith("0ab2272c-5201-44f6-8420-ea4eb9e65c8d");
       })
 
       test('then is should return a book', () => {
         expect(books).toEqual({
-          id: 1,
+          id: "0ab2272c-5201-44f6-8420-ea4eb9e65c8d",
           title: 'The Hobbit',
           author: 'J.R.R. Tolkien',
           isbn: '978-0547928227',
-          price: 9.99,
+          price: 15,
         });
       })
 
@@ -83,23 +82,23 @@ describe("BooksController", () => {
   // Get all books
   describe("getBooks", () => {
     describe("when getBooks is called", () => {
-      let books: Books[]
+      let books: BookDto[]
 
       beforeEach(async () => {
-        books = await booksController.getBooks();
+        books = await bookController.getBooks();
       })
 
       test("then it should call booksController", () => {
-        expect(booksController.getBooks).toBeCalledWith();
+        expect(bookController.getBooks).toBeCalledWith();
       })
 
       test('then is should return a books', () => {
         expect(books).toEqual([{
-          id: 1,
+          id: "0ab2272c-5201-44f6-8420-ea4eb9e65c8d",
           title: 'The Hobbit',
           author: 'J.R.R. Tolkien',
           isbn: '978-0547928227',
-          price: 9.99,
+          price: 15,
         }]);
       })
     })
@@ -111,11 +110,11 @@ describe("BooksController", () => {
       let books: any
 
       beforeEach(async () => {
-        books = await booksController.deleteBook(1);
+        books = await bookController.deleteBook("0ab2272c-5201-44f6-8420-ea4eb9e65c8d"); //TODO
       })
 
       test("then it should call booksController", () => {
-        expect(booksController.deleteBook).toBeCalledWith(1);
+        expect(bookController.deleteBook).toBeCalledWith("0ab2272c-5201-44f6-8420-ea4eb9e65c8d");
       })
 
       test('then is should return success is True', () => {
