@@ -66,10 +66,6 @@ The API includes both unit tests and integration tests. To run the tests:
 ```bash
 # unit tests
 $ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
 ```
 
 

@@ -2,7 +2,6 @@ import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post } from
 import { BookService } from './book.service';
 import { BookDto } from './dto/book.dto';
 import { CreateBookDto } from './dto/create-book.dto';
-import { BookEntity } from './entity/book.entity';
 
 @Controller('book')
 export class BookController {
@@ -22,8 +21,10 @@ export class BookController {
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  getBookById(@Param('id') id: string): Promise<BookDto> {
-    return this.booksService.getBookById(id);
+  getBookById(@Param('id') id: string): Promise<BookDto | Error> {
+
+    return this.booksService.getBookById(id)
+    
   }
 
   @Delete(':id')

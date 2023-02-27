@@ -55,7 +55,7 @@ describe('BooksService', () => {
   // Get Book By Id 
   describe("getBookById", () => {
     describe("when getBookById is called", () => {
-      let book: BookDto
+      let book: BookDto | Error
 
       beforeEach(async () => {
         book = await bookService.getBookById("0ab2272c-5201-44f6-8420-ea4eb9e65c8d");

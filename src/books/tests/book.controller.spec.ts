@@ -56,10 +56,10 @@ describe("BooksController", () => {
   // Get Book By Id 
   describe("getBookById", () => {
     describe("when getBookById is called", () => {
-      let books: BookDto
+      let books: BookDto | Error
 
       beforeEach(async () => {
-        books = await bookController.getBookById("0ab2272c-5201-44f6-8420-ea4eb9e65c8d"); //TODO add id uuid
+        books = await bookController.getBookById("0ab2272c-5201-44f6-8420-ea4eb9e65c8d");
       })
 
       test("then it should call booksController", () => {
@@ -110,7 +110,7 @@ describe("BooksController", () => {
       let books: any
 
       beforeEach(async () => {
-        books = await bookController.deleteBook("0ab2272c-5201-44f6-8420-ea4eb9e65c8d"); //TODO
+        books = await bookController.deleteBook("0ab2272c-5201-44f6-8420-ea4eb9e65c8d");
       })
 
       test("then it should call booksController", () => {

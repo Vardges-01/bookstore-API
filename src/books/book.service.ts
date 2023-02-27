@@ -5,6 +5,7 @@ import { BookDto } from './dto/book.dto';
 import { CreateBookDto } from './dto/create-book.dto';
 import { BookEntity } from './entity/book.entity';
 import { compact, map} from "lodash";
+import "../common/array.interface"
 
 @Injectable()
 export class BookService {
@@ -22,14 +23,20 @@ export class BookService {
 
     async getBooks(): Promise<BookDto[]> {
         const books = await this.bookRepository.find();
-        const book = compact(map(books, (item) => item.toDto()));
-        
-        return book;
+        // const book = compact(map(books, (item) => item.toDto()));
+        return books.toDtos()
     }
 
-    async getBookById(id: string): Promise<BookDto> {
+    async getBookById(id: string): Promise<BookDto | Error> {
         let book = await this.bookRepository.findOne({ where: { id } });
-
+        
+        if(!book){  
+            return {
+                name: "Get book By Id",
+                message: "Book not found"
+            };
+        }
+        
         return book.toDto();
     }
 
