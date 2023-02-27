@@ -50,11 +50,12 @@ $ npm run start:dev
 
 ## API Endpoints
 The API exposes the following endpoints:
-
+```
 POST /book - Create a new book
 GET /book - Retrieve all books
 GET /book/:id - Retrieve a single book by ID
 DELETE /book/:id - Delete a book by ID
+```
 
 ## Test
 The API includes both unit tests and integration tests. To run the tests:
