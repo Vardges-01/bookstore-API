@@ -30,7 +30,7 @@ $ npm insatll
 
 1. Start the PostgreSQL database using Docker Compose:
 ```bash
-$ npm npm run start:db
+$ npm run start:db
 ```
 
 2. Generate and Run migrations
